@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
+from service.models import Order, OrderItem, Service
 
 User = get_user_model()
 
@@ -52,4 +53,50 @@ class UserProfileSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'username', 'email', 'first_name', 'last_name', 
                  'phone_number', 'bio', 'profile_picture', 'social_media', 'role')
-        read_only_fields = ('id', 'username', 'email', 'role')
+        read_only_fields = ('id', 'username', 'email', 'role')  
+        
+class ServiceHistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Service
+        fields = ['id', 'name', 'price']
+
+class OrderItemSerializer(serializers.ModelSerializer):
+    service = ServiceHistorySerializer()
+    
+    class Meta:
+        model = OrderItem
+        fields = ['service', 'quantity', 'price']
+
+class OrderSerializer(serializers.ModelSerializer):
+    order_items = OrderItemSerializer(many=True, source='order_items.all')
+    
+    class Meta:
+        model = Order
+        fields = ['id', 'total_price', 'status', 'created_at', 'order_items']
+
+class UserServiceHistorySerializer(serializers.ModelSerializer):
+    orders = OrderSerializer(many=True, source='orders.all')
+    
+    class Meta:
+        model = User
+        fields = [
+            'id', 'username', 'email', 'phone_number', 
+            'bio', 'profile_picture', 'social_media', 'orders'
+        ]
+        read_only_fields = fields
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'role', 'phone_number', 'bio', 'profile_picture', 'social_media']
+        read_only_fields = ['username', 'email']
+
+class UserPromotionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['role']
+        
+    def validate_role(self, value):
+        if value not in [choice[0] for choice in User.ROLE_CHOICES]:
+            raise serializers.ValidationError(f"Role must be one of {[choice[0] for choice in User.ROLE_CHOICES]}")
+        return value

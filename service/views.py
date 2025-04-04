@@ -12,14 +12,14 @@ from .serializers import (
 )
 from users.permissions import IsAdminUser
 from django_filters.rest_framework import DjangoFilterBackend
+from django.db.models import Avg, OuterRef, Subquery
 
 class ServiceViewSet(viewsets.ModelViewSet):
     queryset = Service.objects.all()
     serializer_class = ServiceSerializer
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
-    ordering_fields = ['average_rating', 'price', 'name']
+    ordering_fields = ['rating', 'price', 'name']
     filterset_fields = ['name', 'price']
-    ilter_backends = [DjangoFilterBackend]
     
     def get_permissions(self):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
@@ -31,7 +31,16 @@ class ServiceViewSet(viewsets.ModelViewSet):
         if context is not None:
             context['request'].accepted_renderer.format = 'json'
         return context
+    
+    def get_queryset(self):
+        one_rating = Review.objects.filter(
+            service=OuterRef('pk')
+        ).values('rating')[:1]  # grab any single rating, e.g., the first
 
+        return Service.objects.annotate(
+            rating=Subquery(one_rating)
+        )
+    
 class CartViewSet(viewsets.ModelViewSet):
     serializer_class = CartSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -42,35 +51,35 @@ class CartViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
-    @action(detail=True, methods=['post'])
-    def add_item(self, request, pk=None):
-        cart = self.get_object()
-        serializer = CartItemSerializer(
-            data=request.data,
-            context={'request': request}
-        )
-        serializer.is_valid(raise_exception=True)
-        serializer.save(cart=cart)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    # @action(detail=True, methods=['post'])
+    # def add_item(self, request, pk=None):
+    #     cart = self.get_object()
+    #     serializer = CartItemSerializer(
+    #         data=request.data,
+    #         context={'request': request}
+    #     )
+    #     serializer.is_valid(raise_exception=True)
+    #     serializer.save(cart=cart)
+    #     return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    @action(detail=True, methods=['post'])
-    def remove_item(self, request, pk=None):
-        cart = self.get_object()
-        service_id = request.data.get('service_id')
-        quantity = request.data.get('quantity', 1)
+    # @action(detail=True, methods=['post'])
+    # def remove_item(self, request, pk=None):
+    #     cart = self.get_object()
+    #     service_id = request.data.get('service_id')
+    #     quantity = request.data.get('quantity', 1)
 
-        try:
-            cart_item = CartItem.objects.get(cart=cart, service_id=service_id)
-        except CartItem.DoesNotExist:
-            return Response({'error': 'Item not found in cart'}, status=status.HTTP_404_NOT_FOUND)
+    #     try:
+    #         cart_item = CartItem.objects.get(cart=cart, service_id=service_id)
+    #     except CartItem.DoesNotExist:
+    #         return Response({'error': 'Item not found in cart'}, status=status.HTTP_404_NOT_FOUND)
 
-        if cart_item.quantity > quantity:
-            cart_item.quantity -= int(quantity)
-            cart_item.save()
-        else:
-            cart_item.delete()
+    #     if cart_item.quantity > quantity:
+    #         cart_item.quantity -= int(quantity)
+    #         cart_item.save()
+    #     else:
+    #         cart_item.delete()
 
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    #     return Response(status=status.HTTP_204_NO_CONTENT)
 
 class CartItemViewSet(viewsets.ModelViewSet):
     serializer_class = CartItemSerializer

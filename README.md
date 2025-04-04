@@ -31,11 +31,11 @@
 ## API Endpoints
 
 ### Authentication
-- `POST /api/auth/register/` - Register new user
-- `POST /api/auth/login/` - Login and get JWT token
-- `GET /api/auth/profile/` - Get user profile
-- `PUT /api/auth/profile/update/` - Update profile
-- `POST /api/auth/promote/<user_id>/` - Promote user to admin (admin only)
+- `POST /api/users/register/` - Register new user
+- `POST /api/users/login/` - Login and get JWT token
+- `GET /api/users/profile/` - Get user profile
+- `PUT /api/users/profile/update/` - Update profile
+- `POST /api/users/<user_id>/promote` - Promote user to admin (admin only)
 
 ### Services
 - `GET /api/services/` - List all services
@@ -43,7 +43,7 @@
 - `GET /api/services/<id>/` - Get service details
 - `PUT /api/services/<id>/` - Update service (admin only)
 - `DELETE /api/services/<id>/` - Delete service (admin only)
-- `GET /api/services/?ordering=average_rating` - Sort services by rating
+- `GET /api/services/?ordering=rating` - Sort services by rating
 - `GET /api/services/?name=<name>` - Filter services by name
 - `GET /api/services/?price=<price>` - Filter services by price
 

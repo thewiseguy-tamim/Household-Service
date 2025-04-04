@@ -2,9 +2,11 @@ from rest_framework import serializers
 from .models import Service, Cart, CartItem, Order, Review, OrderItem
 
 class ServiceSerializer(serializers.ModelSerializer):
+    rating = serializers.IntegerField(read_only=True)
+
     class Meta:
         model = Service
-        fields = '__all__'
+        fields = ['id', 'name', 'description', 'price', 'rating']
 
 class CartItemSerializer(serializers.ModelSerializer):
     service = ServiceSerializer(read_only=True)
