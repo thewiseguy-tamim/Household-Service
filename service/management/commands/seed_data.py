@@ -20,7 +20,7 @@ class Command(BaseCommand):
                 email='admin@example.com',
                 password='admin123',
                 role='ADMIN',
-                phone_number='+1234567890'
+                phone_number='+1234567890'  # Use a valid phone number length
             )
             self.stdout.write(self.style.SUCCESS('Created admin user'))
         else:
@@ -31,12 +31,14 @@ class Command(BaseCommand):
         for i in range(5):
             username = f'user{i}'
             if not User.objects.filter(username=username).exists():
+                # Ensure phone number is within valid length (e.g., 17 characters max)
+                phone_number = fake.phone_number()[:17]
                 user = User.objects.create_user(
                     username=username,
                     email=f'{username}@example.com',
                     password=f'{username}123',
                     role='CLIENT',
-                    phone_number=fake.phone_number(),
+                    phone_number=phone_number,
                     bio=fake.text()
                 )
                 users.append(user)

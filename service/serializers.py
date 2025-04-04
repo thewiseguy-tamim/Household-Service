@@ -2,11 +2,19 @@ from rest_framework import serializers
 from .models import Service, Cart, CartItem, Order, Review, OrderItem
 
 class ServiceSerializer(serializers.ModelSerializer):
-    rating = serializers.IntegerField(read_only=True)
+    rating = serializers.IntegerField(read_only=True, allow_null=True)
+    average_rating = serializers.FloatField(
+        source='annotated_avg', 
+        read_only=True
+    )
 
     class Meta:
         model = Service
-        fields = ['id', 'name', 'description', 'price', 'rating']
+        fields = [
+            'id', 'name', 'description', 
+            'price', 'rating', 'average_rating','duration',
+            'created_at', 'updated_at'
+        ]
 
 class CartItemSerializer(serializers.ModelSerializer):
     service = ServiceSerializer(read_only=True)

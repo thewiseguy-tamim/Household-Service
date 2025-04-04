@@ -756,7 +756,7 @@ try {
 	};
 }
 
-function Sizzle( selector, context, results, seed ) {
+function Sizzle( selector, context, results,  ) {
 	var m, i, elem, nid, match, groups, newSelector,
 		newContext = context && context.ownerDocument,
 
@@ -773,7 +773,7 @@ function Sizzle( selector, context, results, seed ) {
 	}
 
 	// Try to shortcut find operations (as opposed to filters) in HTML documents
-	if ( !seed ) {
+	if ( ! ) {
 		setDocument( context );
 		context = context || document;
 
@@ -895,7 +895,7 @@ function Sizzle( selector, context, results, seed ) {
 	}
 
 	// All others
-	return select( selector.replace( rtrim, "$1" ), context, results, seed );
+	return select( selector.replace( rtrim, "$1" ), context, results,  );
 }
 
 /**
@@ -1079,15 +1079,15 @@ function createDisabledPseudo( disabled ) {
 function createPositionalPseudo( fn ) {
 	return markFunction( function( argument ) {
 		argument = +argument;
-		return markFunction( function( seed, matches ) {
+		return markFunction( function( , matches ) {
 			var j,
-				matchIndexes = fn( [], seed.length, argument ),
+				matchIndexes = fn( [], .length, argument ),
 				i = matchIndexes.length;
 
 			// Match elements found at the specified indexes
 			while ( i-- ) {
-				if ( seed[ ( j = matchIndexes[ i ] ) ] ) {
-					seed[ j ] = !( matches[ j ] = seed[ j ] );
+				if ( [ ( j = matchIndexes[ i ] ) ] ) {
+					[ j ] = !( matches[ j ] = [ j ] );
 				}
 			}
 		} );
@@ -2104,13 +2104,13 @@ Expr = Sizzle.selectors = {
 			if ( fn.length > 1 ) {
 				args = [ pseudo, pseudo, "", argument ];
 				return Expr.setFilters.hasOwnProperty( pseudo.toLowerCase() ) ?
-					markFunction( function( seed, matches ) {
+					markFunction( function( , matches ) {
 						var idx,
-							matched = fn( seed, argument ),
+							matched = fn( , argument ),
 							i = matched.length;
 						while ( i-- ) {
-							idx = indexOf( seed, matched[ i ] );
-							seed[ idx ] = !( matches[ idx ] = matched[ i ] );
+							idx = indexOf( , matched[ i ] );
+							[ idx ] = !( matches[ idx ] = matched[ i ] );
 						}
 					} ) :
 					function( elem ) {
@@ -2135,15 +2135,15 @@ Expr = Sizzle.selectors = {
 				matcher = compile( selector.replace( rtrim, "$1" ) );
 
 			return matcher[ expando ] ?
-				markFunction( function( seed, matches, _context, xml ) {
+				markFunction( function( , matches, _context, xml ) {
 					var elem,
-						unmatched = matcher( seed, null, xml, [] ),
-						i = seed.length;
+						unmatched = matcher( , null, xml, [] ),
+						i = .length;
 
 					// Match elements unmatched by `matcher`
 					while ( i-- ) {
 						if ( ( elem = unmatched[ i ] ) ) {
-							seed[ i ] = !( matches[ i ] = elem );
+							[ i ] = !( matches[ i ] = elem );
 						}
 					}
 				} ) :
@@ -2548,28 +2548,28 @@ function setMatcher( preFilter, selector, matcher, postFilter, postFinder, postS
 	if ( postFinder && !postFinder[ expando ] ) {
 		postFinder = setMatcher( postFinder, postSelector );
 	}
-	return markFunction( function( seed, results, context, xml ) {
+	return markFunction( function( , results, context, xml ) {
 		var temp, i, elem,
 			preMap = [],
 			postMap = [],
 			preexisting = results.length,
 
-			// Get initial elements from seed or context
-			elems = seed || multipleContexts(
+			// Get initial elements from  or context
+			elems =  || multipleContexts(
 				selector || "*",
 				context.nodeType ? [ context ] : context,
 				[]
 			),
 
-			// Prefilter to get matcher input, preserving a map for seed-results synchronization
-			matcherIn = preFilter && ( seed || !selector ) ?
+			// Prefilter to get matcher input, preserving a map for -results synchronization
+			matcherIn = preFilter && (  || !selector ) ?
 				condense( elems, preMap, preFilter, context, xml ) :
 				elems,
 
 			matcherOut = matcher ?
 
-				// If we have a postFinder, or filtered seed, or non-seed postFilter or preexisting results,
-				postFinder || ( seed ? preFilter : preexisting || postFilter ) ?
+				// If we have a postFinder, or filtered , or non- postFilter or preexisting results,
+				postFinder || (  ? preFilter : preexisting || postFilter ) ?
 
 					// ...intermediate processing is necessary
 					[] :
@@ -2597,7 +2597,7 @@ function setMatcher( preFilter, selector, matcher, postFilter, postFinder, postS
 			}
 		}
 
-		if ( seed ) {
+		if (  ) {
 			if ( postFinder || preFilter ) {
 				if ( postFinder ) {
 
@@ -2614,13 +2614,13 @@ function setMatcher( preFilter, selector, matcher, postFilter, postFinder, postS
 					postFinder( null, ( matcherOut = [] ), temp, xml );
 				}
 
-				// Move matched elements from seed to results to keep them synchronized
+				// Move matched elements from  to results to keep them synchronized
 				i = matcherOut.length;
 				while ( i-- ) {
 					if ( ( elem = matcherOut[ i ] ) &&
-						( temp = postFinder ? indexOf( seed, elem ) : preMap[ i ] ) > -1 ) {
+						( temp = postFinder ? indexOf( , elem ) : preMap[ i ] ) > -1 ) {
 
-						seed[ temp ] = !( results[ temp ] = elem );
+						[ temp ] = !( results[ temp ] = elem );
 					}
 				}
 			}
@@ -2707,16 +2707,16 @@ function matcherFromTokens( tokens ) {
 function matcherFromGroupMatchers( elementMatchers, setMatchers ) {
 	var bySet = setMatchers.length > 0,
 		byElement = elementMatchers.length > 0,
-		superMatcher = function( seed, context, xml, results, outermost ) {
+		superMatcher = function( , context, xml, results, outermost ) {
 			var elem, j, matcher,
 				matchedCount = 0,
 				i = "0",
-				unmatched = seed && [],
+				unmatched =  && [],
 				setMatched = [],
 				contextBackup = outermostContext,
 
-				// We must always have either seed elements or outermost context
-				elems = seed || byElement && Expr.find[ "TAG" ]( "*", outermost ),
+				// We must always have either  elements or outermost context
+				elems =  || byElement && Expr.find[ "TAG" ]( "*", outermost ),
 
 				// Use integer dirruns iff this is the outermost matcher
 				dirrunsUnique = ( dirruns += contextBackup == null ? 1 : Math.random() || 0.1 ),
@@ -2766,7 +2766,7 @@ function matcherFromGroupMatchers( elementMatchers, setMatchers ) {
 					}
 
 					// Lengthen the array for every element, matched or not
-					if ( seed ) {
+					if (  ) {
 						unmatched.push( elem );
 					}
 				}
@@ -2779,7 +2779,7 @@ function matcherFromGroupMatchers( elementMatchers, setMatchers ) {
 			// Apply set filters to unmatched elements
 			// NOTE: This can be skipped if there are no unmatched elements (i.e., `matchedCount`
 			// equals `i`), unless we didn't visit _any_ elements in the above loop because we have
-			// no element matchers and no seed.
+			// no element matchers and no .
 			// Incrementing an initially-string "0" `i` allows `i` to remain a string only in that
 			// case, which will result in a "00" `matchedCount` that differs from `i` but is also
 			// numerically zero.
@@ -2789,7 +2789,7 @@ function matcherFromGroupMatchers( elementMatchers, setMatchers ) {
 					matcher( unmatched, setMatched, context, xml );
 				}
 
-				if ( seed ) {
+				if (  ) {
 
 					// Reintegrate element matches to eliminate the need for sorting
 					if ( matchedCount > 0 ) {
@@ -2807,8 +2807,8 @@ function matcherFromGroupMatchers( elementMatchers, setMatchers ) {
 				// Add matches to results
 				push.apply( results, setMatched );
 
-				// Seedless set matches succeeding multiple successful matchers stipulate sorting
-				if ( outermost && !seed && setMatched.length > 0 &&
+				// less set matches succeeding multiple successful matchers stipulate sorting
+				if ( outermost && ! && setMatched.length > 0 &&
 					( matchedCount + setMatchers.length ) > 1 ) {
 
 					Sizzle.uniqueSort( results );
@@ -2870,16 +2870,16 @@ compile = Sizzle.compile = function( selector, match /* Internal Use Only */ ) {
  *  selector function built with Sizzle.compile
  * @param {Element} context
  * @param {Array} [results]
- * @param {Array} [seed] A set of elements to match against
+ * @param {Array} [] A set of elements to match against
  */
-select = Sizzle.select = function( selector, context, results, seed ) {
+select = Sizzle.select = function( selector, context, results,  ) {
 	var i, tokens, token, type, find,
 		compiled = typeof selector === "function" && selector,
-		match = !seed && tokenize( ( selector = compiled.selector || selector ) );
+		match = ! && tokenize( ( selector = compiled.selector || selector ) );
 
 	results = results || [];
 
-	// Try to minimize operations if there is only one selector in the list and no seed
+	// Try to minimize operations if there is only one selector in the list and no 
 	// (the latter of which guarantees us context)
 	if ( match.length === 1 ) {
 
@@ -2901,7 +2901,7 @@ select = Sizzle.select = function( selector, context, results, seed ) {
 			selector = selector.slice( tokens.shift().value.length );
 		}
 
-		// Fetch a seed set for right-to-left matching
+		// Fetch a  set for right-to-left matching
 		i = matchExpr[ "needsContext" ].test( selector ) ? 0 : tokens.length;
 		while ( i-- ) {
 			token = tokens[ i ];
@@ -2913,17 +2913,17 @@ select = Sizzle.select = function( selector, context, results, seed ) {
 			if ( ( find = Expr.find[ type ] ) ) {
 
 				// Search, expanding context for leading sibling combinators
-				if ( ( seed = find(
+				if ( (  = find(
 					token.matches[ 0 ].replace( runescape, funescape ),
 					rsibling.test( tokens[ 0 ].type ) && testContext( context.parentNode ) ||
 						context
 				) ) ) {
 
-					// If seed is empty or no tokens remain, we can return early
+					// If  is empty or no tokens remain, we can return early
 					tokens.splice( i, 1 );
-					selector = seed.length && toSelector( tokens );
+					selector = .length && toSelector( tokens );
 					if ( !selector ) {
-						push.apply( results, seed );
+						push.apply( results,  );
 						return results;
 					}
 
@@ -2936,7 +2936,7 @@ select = Sizzle.select = function( selector, context, results, seed ) {
 	// Compile and execute a filtering function if one is not provided
 	// Provide `match` to avoid retokenization if we modified the selector above
 	( compiled || compile( selector, match ) )(
-		seed,
+		,
 		context,
 		!documentIsHTML,
 		results,

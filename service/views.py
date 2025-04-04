@@ -14,31 +14,26 @@ from users.permissions import IsAdminUser
 from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Avg, OuterRef, Subquery
 
+
 class ServiceViewSet(viewsets.ModelViewSet):
-    queryset = Service.objects.all()
+    queryset = Service.objects.annotate(
+        annotated_avg=Avg('reviews__rating')  
+    )
     serializer_class = ServiceSerializer
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     ordering_fields = ['rating', 'price', 'name']
     filterset_fields = ['name', 'price']
-    
-    def get_permissions(self):
-        if self.action in ['create', 'update', 'partial_update', 'destroy']:
-            return [permissions.IsAuthenticated(), IsAdminUser()]
-        return [permissions.AllowAny()]
-    
-    def get_renderer_context(self):
-        context = super().get_renderer_context()
-        if context is not None:
-            context['request'].accepted_renderer.format = 'json'
-        return context
-    
-    def get_queryset(self):
-        one_rating = Review.objects.filter(
-            service=OuterRef('pk')
-        ).values('rating')[:1]  # grab any single rating, e.g., the first
 
-        return Service.objects.annotate(
-            rating=Subquery(one_rating)
+    def get_queryset(self):
+        # Get first review's rating (subquery)
+        first_rating_subquery = Review.objects.filter(
+            service=OuterRef('pk')
+        ).values('rating')[:1]
+
+        # Annotate average rating (aggregate)
+        return super().get_queryset().annotate(
+            rating=Subquery(first_rating_subquery),
+            average_rating=Avg('reviews__rating')  
         )
     
 class CartViewSet(viewsets.ModelViewSet):

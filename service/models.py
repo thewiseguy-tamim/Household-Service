@@ -13,12 +13,12 @@ class Service(models.Model):
     def __str__(self):
         return self.name
 
-    @property
-    def average_rating(self):
-        reviews = self.reviews.all()
-        if reviews.count() > 0:
-            return sum([review.rating for review in reviews]) / reviews.count()
-        return 0
+    # @property
+    # def average_rating(self):
+    #     reviews = self.reviews.all()
+    #     if reviews.count() > 0:
+    #         return sum([review.rating for review in reviews]) / reviews.count()
+    #     return 0
 
 class Cart(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='cart')
@@ -66,8 +66,12 @@ class OrderItem(models.Model):
 
 class Review(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews')
-    service = models.ForeignKey(Service, on_delete=models.CASCADE, related_name='reviews')
-    rating = models.PositiveSmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
+    service = models.ForeignKey(
+        Service, 
+        on_delete=models.CASCADE, 
+        related_name='reviews' 
+    )
+    rating = models.FloatField()
     comment = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
