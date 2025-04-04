@@ -51,39 +51,20 @@ class CartViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
-    # @action(detail=True, methods=['post'])
-    # def add_item(self, request, pk=None):
-    #     cart = self.get_object()
-    #     serializer = CartItemSerializer(
-    #         data=request.data,
-    #         context={'request': request}
-    #     )
-    #     serializer.is_valid(raise_exception=True)
-    #     serializer.save(cart=cart)
-    #     return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-    # @action(detail=True, methods=['post'])
-    # def remove_item(self, request, pk=None):
-    #     cart = self.get_object()
-    #     service_id = request.data.get('service_id')
-    #     quantity = request.data.get('quantity', 1)
-
-    #     try:
-    #         cart_item = CartItem.objects.get(cart=cart, service_id=service_id)
-    #     except CartItem.DoesNotExist:
-    #         return Response({'error': 'Item not found in cart'}, status=status.HTTP_404_NOT_FOUND)
-
-    #     if cart_item.quantity > quantity:
-    #         cart_item.quantity -= int(quantity)
-    #         cart_item.save()
-    #     else:
-    #         cart_item.delete()
-
-    #     return Response(status=status.HTTP_204_NO_CONTENT)
 
 class CartItemViewSet(viewsets.ModelViewSet):
     serializer_class = CartItemSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def get_authenticators(self):
+        if getattr(self, 'swagger_fake_view', False):
+            return []  # No authentication for Swagger
+        return super().get_authenticators()
+
+    def filter_queryset(self, queryset):
+        if getattr(self, 'swagger_fake_view', False):
+            return CartItem.objects.none()  # Bypass user filtering for Swagger
+        return super().filter_queryset(queryset)
 
     def get_queryset(self):
         return CartItem.objects.filter(cart__user=self.request.user)
@@ -96,6 +77,16 @@ class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def get_authenticators(self):
+        if getattr(self, 'swagger_fake_view', False):
+            return []  # No authentication for Swagger
+        return super().get_authenticators()
+
+    def filter_queryset(self, queryset):
+        if getattr(self, 'swagger_fake_view', False):
+            return Order.objects.none()  # Bypass user filtering for Swagger
+        return super().filter_queryset(queryset)
 
     def get_queryset(self):
         return Order.objects.filter(user=self.request.user)

@@ -49,6 +49,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         return user
 
 class UserProfileSerializer(serializers.ModelSerializer):
+    profile_picture = serializers.ImageField()
     class Meta:
         model = User
         fields = ('id', 'username', 'email', 'first_name', 'last_name', 
@@ -67,7 +68,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
         model = OrderItem
         fields = ['service', 'quantity', 'price']
 
-class OrderSerializer(serializers.ModelSerializer):
+class OrderSerializer1(serializers.ModelSerializer):
     order_items = OrderItemSerializer(many=True, source='order_items.all')
     
     class Meta:
@@ -75,7 +76,8 @@ class OrderSerializer(serializers.ModelSerializer):
         fields = ['id', 'total_price', 'status', 'created_at', 'order_items']
 
 class UserServiceHistorySerializer(serializers.ModelSerializer):
-    orders = OrderSerializer(many=True, source='orders.all')
+    orders = OrderSerializer1(many=True, source='orders.all')
+    profile_picture = serializers.ImageField()
     
     class Meta:
         model = User
@@ -86,6 +88,7 @@ class UserServiceHistorySerializer(serializers.ModelSerializer):
         read_only_fields = fields
 
 class UserSerializer(serializers.ModelSerializer):
+    profile_picture = serializers.ImageField()
     class Meta:
         model = User
         fields = ['id', 'username', 'email', 'role', 'phone_number', 'bio', 'profile_picture', 'social_media']
