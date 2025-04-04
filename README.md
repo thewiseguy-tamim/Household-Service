@@ -102,6 +102,7 @@ DEBUG=True
 DATABASE_URL=your_database_url
 ALLOWED_HOSTS=*
 EMIL_HOST=your_email_host
+```
 
 
 ## License
