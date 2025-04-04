@@ -31,35 +31,35 @@
 ## API Endpoints
 
 ### Authentication
-- `POST /api/users/register/` - Register new user
-- `POST /api/users/login/` - Login and get JWT token
-- `GET /api/users/profile/` - Get user profile
-- `PUT /api/users/profile/update/` - Update profile
-- `POST /api/users/<user_id>/promote` - Promote user to admin (admin only)
+- `POST /users/register/` - Register new user
+- `POST /users/login/` - Login and get JWT token
+- `GET /users/profile/` - Get user profile
+- `PUT /users/profile/update/` - Update profile
+- `POST /users/<user_id>/promote` - Promote user to admin (admin only)
 
 ### Services
-- `GET /api/services/` - List all services
-- `POST /api/services/` - Create new service (admin only)
-- `GET /api/services/<id>/` - Get service details
-- `PUT /api/services/<id>/` - Update service (admin only)
-- `DELETE /api/services/<id>/` - Delete service (admin only)
-- `GET /api/services/?ordering=rating` - Sort services by rating
-- `GET /api/services/?name=<name>` - Filter services by name
-- `GET /api/services/?price=<price>` - Filter services by price
+- `GET /services/` - List all services
+- `POST /services/` - Create new service (admin only)
+- `GET /services/<id>/` - Get service details
+- `PUT /services/<id>/` - Update service (admin only)
+- `DELETE /services/<id>/` - Delete service (admin only)
+- `GET /services/?ordering=rating` - Sort services by rating
+- `GET /services/?name=<name>` - Filter services by name
+- `GET /services/?price=<price>` - Filter services by price
 
 ### Cart
-- `GET /api/carts/` - View user's cart
-- `POST /api/cart/add/` - Add service to cart
-- `DELETE /api/cart/remove/<id>/` - Remove service from cart
+- `GET /carts/` - View user's cart
+- `POST /cart/add/` - Add service to cart
+- `DELETE /cart/remove/<id>/` - Remove service from cart
 
 ### Orders
-- `GET /api/orders/` - View order history
-- `POST /api/orders/` - Place order from cart
-- `GET /api/orders/<id>/` - Get order details
+- `GET /orders/` - View order history
+- `POST /orders/` - Place order from cart
+- `GET /orders/<id>/` - Get order details
 
 ### Reviews
-- `GET /api/reviews/` - List all reviews
-- `POST /api/reviews/` - Create review for service
-- `GET /api/reviews/?service_id=<id>` - Get reviews for specific service
-- `PUT /api/reviews/<id>/` - Update review
-- `DELETE /api/reviews/<id>/` - Delete review
+- `GET /reviews/` - List all reviews
+- `POST /reviews/` - Create review for service
+- `GET /reviews/?service_id=<id>` - Get reviews for specific service
+- `PUT /reviews/<id>/` - Update review
+- `DELETE /reviews/<id>/` - Delete review
