@@ -1,5 +1,23 @@
 # Household Service Platform API
 
+Household Service Platform is a RESTful API built using Django REST Framework (DRF). It provides endpoints for managing users, services, orders, reviews, and more. The project includes JWT authentication and API documentation with Swagger.
+
+## Features
+- User authentication (registration, login, profile management)
+- Service management (create, update, delete, list, and filter services)
+- Cart and order functionality (add/remove items, place orders, view order history)
+- Reviews management (add, update, delete, and filter reviews)
+- JWT authentication using Djoser
+- API documentation using Swagger (drf_yasg)
+
+## Technologies Used
+- **Django** - Backend framework
+- **Django REST Framework (DRF)** - API development
+- **Djoser** - Authentication
+- **Simple JWT** - JWT authentication
+- **drf-yasg** - API documentation (Swagger)
+- **PostgreSQL** (or SQLite) - Database
+
 ## Setup
 
 1. Create and activate virtual environment:
@@ -27,6 +45,17 @@
    ```bash
    python manage.py runserver
    ```
+
+
+## API Documentation
+Swagger documentation is available at:
+```
+http://127.0.0.1:8000/swagger/
+```
+
+ReDoc documentation is available at:
+```
+http://127.0.0.1:8000/redoc/
 
 ## API Endpoints
 
@@ -63,3 +92,20 @@
 - `GET /reviews/?service_id=<id>` - Get reviews for specific service
 - `PUT /reviews/<id>/` - Update review
 - `DELETE /reviews/<id>/` - Delete review
+
+## Environment Variables
+Create a `.env` file in the root directory and add the following:
+```ini
+SECRET_KEY=your_secret_key
+DEBUG=True
+DATABASE_URL=your_database_url
+ALLOWED_HOSTS=*
+EMIL_HOST=your_email_host
+```
+
+## License
+This project is licensed under the MIT License.
+
+---
+### Author
+Tamim Islam (https://https://github.com/thewiseguy-tamim)
