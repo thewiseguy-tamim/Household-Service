@@ -56,6 +56,7 @@ http://127.0.0.1:8000/swagger/
 ReDoc documentation is available at:
 ```
 http://127.0.0.1:8000/redoc/
+```
 
 ## API Endpoints
 
@@ -101,7 +102,7 @@ DEBUG=True
 DATABASE_URL=your_database_url
 ALLOWED_HOSTS=*
 EMIL_HOST=your_email_host
-```
+
 
 ## License
 This project is licensed under the MIT License.
