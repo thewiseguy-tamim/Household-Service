@@ -36,10 +36,10 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
     "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -74,7 +74,9 @@ WSGI_APPLICATION = 'house_project.wsgi.app'
 #     }
 # }
 
-
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173"
+]
 
 DATABASES = {
     'default': dj_database_url.config(default=os.getenv('DATABASE_URL'))

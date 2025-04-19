@@ -13,6 +13,7 @@ from .serializers import (
 from users.permissions import IsAdminUser
 from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Avg, OuterRef, Subquery
+from rest_framework.permissions import AllowAny
 
 
 class ServiceViewSet(viewsets.ModelViewSet):
@@ -23,6 +24,7 @@ class ServiceViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     ordering_fields = ['rating', 'price', 'name']
     filterset_fields = ['name', 'price']
+    permission_classes = [AllowAny]
 
     def get_queryset(self):
         # Get first review's rating (subquery)
