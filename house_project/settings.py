@@ -12,9 +12,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-default-key')
 
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['.vercel.app', '127.0.0.1' ]
+ALLOWED_HOSTS = ['.vercel.app', '127.0.0.1']
 
 INSTALLED_APPS = [
     "whitenoise.runserver_nostatic",
@@ -27,12 +27,12 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
+    'djoser',
     'drf_yasg',
     'users',
     'service',
     'api',
     'django_filters'
-
 ]
 
 MIDDLEWARE = [
@@ -82,7 +82,6 @@ DATABASES = {
     'default': dj_database_url.config(default=os.getenv('DATABASE_URL'))
 }
 
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -121,11 +120,6 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
-    
-     'DEFAULT_FILTER_BACKENDS': [
-        'django_filters.rest_framework.DjangoFilterBackend'
-    ],
-    
 }
 
 SIMPLE_JWT = {
@@ -144,3 +138,31 @@ cloudinary.config(
 )
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+# Email settings (e.g., using Gmail)
+# Email settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # Gmail's SMTP server
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'nottamimislam@gmail.com'  # Your email address
+EMAIL_HOST_PASSWORD = 'piiy bxeo gkby utzh'  # Your email password (Be cautious with hardcoding sensitive information)
+DEFAULT_FROM_EMAIL = 'nottamimislam@gmail.com'  # The default sender email address
+
+# Frontend URL settings
+FRONTEND_PROTOCOL = 'http'
+FRONTEND_DOMAIN = 'localhost:5173'
+
+DJOSER = {
+    # 'FRONTEND_PROTOCOL': 'http',
+    # 'FRONTEND_DOMAIN': 'localhost:5173',
+    'USER_CREATE_PASSWORD_RETYPE': True,
+    'SEND_ACTIVATION_EMAIL': True,
+    'ACTIVATION_URL': 'activate/{uid}/{token}/',
+    'SERIALIZERS': {
+        'user_create': 'users.serializers.RegisterSerializer',
+        'user': 'users.serializers.UserSerializer',
+        'current_user': 'users.serializers.UserSerializer',
+    },
+}
+

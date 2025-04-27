@@ -5,6 +5,7 @@ from .views import (
     UserProfileView, 
     UpdateProfileView
 )
+from . import views
 
 
 urlpatterns = [
@@ -12,5 +13,5 @@ urlpatterns = [
     path('api/token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('profile/', UserProfileView.as_view(), name='user_profile'),
     path('profile/update/', UpdateProfileView.as_view(), name='update_profile'),
-    # path('promote/<int:pk>/', PromoteToAdminView.as_view(), name='promote_to_admin'),
+    path('activate/<uidb64>/<token>/', views.activate_user, name='activate_user'),
 ]

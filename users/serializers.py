@@ -4,6 +4,21 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 from service.models import Order, OrderItem, Service
+from django.core.mail import send_mail
+from django.conf import settings
+from django.template.loader import render_to_string
+from rest_framework import serializers
+from django.contrib.auth import get_user_model
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.core.mail import send_mail
+from django.conf import settings
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.template.loader import render_to_string
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.sites.shortcuts import get_current_site
+from django.urls import reverse
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 
 User = get_user_model()
 
@@ -37,6 +52,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
+        # Create user instance
         user = User.objects.create(
             username=validated_data['username'],
             email=validated_data['email'],
@@ -46,7 +62,26 @@ class RegisterSerializer(serializers.ModelSerializer):
         )
         user.set_password(validated_data['password'])
         user.save()
+
+        # Send activation email
+        self.send_activation_email(user)
+
         return user
+
+    def send_activation_email(self, user):
+        # Generate the activation token using the default token generator
+        uid = str(user.pk)  # Ensure that the user id (uid) is a string
+        token = default_token_generator.make_token(user)
+        
+        # Define the activation link
+        activation_link = f"{settings.FRONTEND_PROTOCOL}://{settings.FRONTEND_DOMAIN}/activate/{uid}/{token}/"
+        
+        # Send the email
+        subject = "Activate your account"
+        message = f"Hello, \n\nWelcome to HomeSnap! To activate your account, please click the link below:\n\n{activation_link}\n\nThank you for joining us!\n\nBest regards,\nThe HomeSnap Team and Tamim Islam"
+
+        
+        send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [user.email])
 
 class UserProfileSerializer(serializers.ModelSerializer):
     profile_picture = serializers.ImageField()

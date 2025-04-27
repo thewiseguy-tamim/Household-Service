@@ -11,7 +11,29 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from rest_framework import generics, permissions
 
+
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.auth import get_user_model
+from django.utils.http import urlsafe_base64_decode
+from django.http import JsonResponse
+from django.contrib.auth import login
+
 User = get_user_model()
+
+def activate_user(request, uidb64, token):
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        return JsonResponse({"detail": "Invalid activation link."}, status=400)
+
+    if default_token_generator.check_token(user, token):
+        user.is_active = True
+        user.save()
+        login(request, user)
+        return JsonResponse({"detail": "Account activated successfully!"})
+    else:
+        return JsonResponse({"detail": "Activation link is invalid or expired."}, status=400)
 
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer

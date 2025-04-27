@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Activate Your Account</title>
+</head>
+<body>
+    <p>Hi {{ user.first_name }},</p>
+    <p>Thank you for registering! Please activate your account by clicking the link below:</p>
+    <p><a href="http://{{ domain }}/activate/{{ uid }}/{{ token }}/">Activate Account</a></p>
+    <p>If you did not make this request, please ignore this email.</p>
+    <p>Best regards,</p>
+    <p>Your Team</p>
+</body>
+</html>
