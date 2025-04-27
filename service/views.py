@@ -17,26 +17,22 @@ from rest_framework.permissions import AllowAny
 
 
 class ServiceViewSet(viewsets.ModelViewSet):
-    queryset = Service.objects.annotate(
-        annotated_avg=Avg('reviews__rating')  
-    )
     serializer_class = ServiceSerializer
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
-    ordering_fields = ['rating', 'price', 'name']
+    ordering_fields = ['average_rating', 'price', 'name']
     filterset_fields = ['name', 'price']
     permission_classes = [AllowAny]
 
     def get_queryset(self):
-        # Get first review's rating (subquery)
         first_rating_subquery = Review.objects.filter(
             service=OuterRef('pk')
         ).values('rating')[:1]
 
-        # Annotate average rating (aggregate)
-        return super().get_queryset().annotate(
+        return Service.objects.annotate(
             rating=Subquery(first_rating_subquery),
-            average_rating=Avg('reviews__rating')  
-        )
+            average_rating=Avg('reviews__rating')
+        ).order_by('-id') 
+
     
 class CartViewSet(viewsets.ModelViewSet):
     serializer_class = CartSerializer
@@ -113,9 +109,9 @@ class OrderViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 class ReviewViewSet(viewsets.ModelViewSet):
-    queryset = Review.objects.all()
+    queryset = Review.objects.all().order_by('-id')
     serializer_class = ReviewSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
+    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [AllowAny]
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)

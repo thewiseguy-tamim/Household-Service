@@ -7,12 +7,16 @@ from .permissions import IsAdminUser, IsProfileOwner
 from users.serializers import UserServiceHistorySerializer
 from rest_framework.decorators import action
 
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+from rest_framework import generics, permissions
 
 User = get_user_model()
 
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
+@method_decorator(csrf_exempt, name='dispatch')
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     permission_classes = [permissions.AllowAny]
