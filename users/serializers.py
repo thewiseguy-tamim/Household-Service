@@ -127,7 +127,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'email', 'role', 'phone_number', 'bio', 'profile_picture', 'social_media']
-        read_only_fields = ['username', 'email']
+        read_only_fields = ['username', 'email', 'role']
 
 class UserPromotionSerializer(serializers.ModelSerializer):
     class Meta:

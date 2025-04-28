@@ -1,6 +1,11 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from users.models import User
+from cloudinary.models import CloudinaryField
+
+class ServiceImage(models.Model):
+    Service = models.ForeignKey('Service', on_delete=models.CASCADE, related_name='images')
+    image = CloudinaryField('image', default='default.jpg')
 
 class Service(models.Model):
     name = models.CharField(max_length=100)
@@ -12,13 +17,6 @@ class Service(models.Model):
 
     def __str__(self):
         return self.name
-
-    # @property
-    # def average_rating(self):
-    #     reviews = self.reviews.all()
-    #     if reviews.count() > 0:
-    #         return sum([review.rating for review in reviews]) / reviews.count()
-    #     return 0
 
 class Cart(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='cart')

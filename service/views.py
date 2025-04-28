@@ -44,6 +44,12 @@ class CartViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+    def create(self, request, *args, **kwargs):
+        existing_cart =Cart.objects.filter(user=request.user).first()
+        if existing_cart:
+            serializer = self.get_serializer(existing_cart)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return super().create(request, *args, **kwargs)
 
 class CartItemViewSet(viewsets.ModelViewSet):
     serializer_class = CartItemSerializer
