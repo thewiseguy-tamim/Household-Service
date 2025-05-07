@@ -84,12 +84,31 @@ class RegisterSerializer(serializers.ModelSerializer):
         send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [user.email])
 
 class UserProfileSerializer(serializers.ModelSerializer):
-    profile_picture = serializers.ImageField()
+    profile_picture = serializers.ImageField(required=False)
+    password = serializers.CharField(write_only=True, required=False, validators=[validate_password])
+    password2 = serializers.CharField(write_only=True, required=False)
+
     class Meta:
         model = User
         fields = ('id', 'username', 'email', 'first_name', 'last_name', 
-                 'phone_number', 'bio', 'profile_picture', 'social_media', 'role')
-        read_only_fields = ('id', 'username', 'email', 'role')  
+                   'phone_number', 'bio', 'profile_picture', 'social_media', 'role', 'password', 'password2')
+        read_only_fields = ('id', 'username', 'email', 'role')
+
+    def validate(self, attrs):
+        if 'password' in attrs and attrs['password'] != attrs.get('password2', None):
+            raise serializers.ValidationError({"password": "Password fields didn't match."})
+        return attrs
+
+    def update(self, instance, validated_data):
+        password = validated_data.pop('password', None)
+        instance = super().update(instance, validated_data)
+        
+        if password:
+            instance.set_password(password)
+            instance.save()
+
+        return instance
+ 
         
 class ServiceHistorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -126,7 +145,7 @@ class UserSerializer(serializers.ModelSerializer):
     profile_picture = serializers.ImageField()
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'role', 'phone_number', 'bio', 'profile_picture', 'social_media']
+        fields = ['id', 'username', 'email', 'role', 'first_name', 'last_name', 'phone_number', 'bio', 'profile_picture', 'social_media']
         read_only_fields = ['username', 'email', 'role']
 
 class UserPromotionSerializer(serializers.ModelSerializer):

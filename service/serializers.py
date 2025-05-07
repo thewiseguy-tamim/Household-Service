@@ -1,7 +1,19 @@
 from rest_framework import serializers
 from .models import Service, Cart, CartItem, Order, Review, OrderItem
+from users.serializers import UserSerializer  # Assuming UserSerializer is defined
+
+from rest_framework import serializers
+from .models import Service, ServiceImage
+from rest_framework import serializers
+from .models import Purchase
+
+class PurchaseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Purchase
+        fields = ['full_name', 'address', 'phone_number', 'service_id']
 
 class ServiceSerializer(serializers.ModelSerializer):
+    
     rating = serializers.IntegerField(read_only=True, allow_null=True)
     average_rating = serializers.FloatField(
         source='annotated_avg', 
@@ -12,7 +24,7 @@ class ServiceSerializer(serializers.ModelSerializer):
         model = Service
         fields = [
             'id', 'name', 'description', 
-            'price', 'rating', 'average_rating','duration',
+            'price', 'rating', 'average_rating', 'duration',
             'created_at', 'updated_at'
         ]
 
@@ -26,6 +38,11 @@ class CartItemSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'cart': {'read_only': True}
         }
+
+    def validate_quantity(self, value):
+        if value < 1:
+            raise serializers.ValidationError("Quantity must be at least 1")
+        return value
 
     def create(self, validated_data):
         service_id = validated_data.pop('service_id')
@@ -63,10 +80,24 @@ class CartSerializer(serializers.ModelSerializer):
             'user': {'read_only': True}
         }
 
+class OrderItemSerializer(serializers.ModelSerializer):
+    service = ServiceSerializer(read_only=True)
+
+    class Meta:
+        model = OrderItem
+        fields = ['id', 'order', 'service', 'quantity', 'price']
+        extra_kwargs = {
+            'order': {'read_only': True}
+        }
+        ref_name = 'ServiceOrderItem'
+
 class OrderSerializer(serializers.ModelSerializer):
+    items = OrderItemSerializer(many=True, read_only=True, source='order_items')
+    user = UserSerializer(read_only=True)
+
     class Meta:
         model = Order
-        fields = '__all__'
+        fields = ['id', 'user', 'total_price', 'status', 'created_at', 'updated_at', 'items', 'transaction_id']
         extra_kwargs = {
             'user': {'read_only': True}
         }

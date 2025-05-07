@@ -3,6 +3,23 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from users.models import User
 from cloudinary.models import CloudinaryField
 
+from django.db import models
+from django.conf import settings
+
+class Purchase(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
+    service_id = models.IntegerField()
+    full_name = models.CharField(max_length=100)
+    address = models.TextField()
+    phone_number = models.CharField(max_length=15)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_first_purchase = models.BooleanField(default=True)
+
+    class Meta:
+        unique_together = ('user', 'service_id')
+
+
+
 class ServiceImage(models.Model):
     Service = models.ForeignKey('Service', on_delete=models.CASCADE, related_name='images')
     image = CloudinaryField('image', default='default.jpg')
@@ -10,7 +27,11 @@ class ServiceImage(models.Model):
 class Service(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    price = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        validators=[MinValueValidator(0.01, message="Price must be positive")]
+    )
     duration = models.DurationField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -29,7 +50,10 @@ class Cart(models.Model):
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='items')
     service = models.ForeignKey(Service, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField(default=1)
+    quantity = models.PositiveIntegerField(
+        default=1, 
+        validators=[MinValueValidator(1, message="Quantity must be at least 1")]
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -45,10 +69,15 @@ class Order(models.Model):
     
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
     items = models.ManyToManyField(Service, through='OrderItem')
-    total_price = models.DecimalField(max_digits=10, decimal_places=2)
+    total_price = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        validators=[MinValueValidator(0.01, message="Total price must be positive")]
+    )
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='PENDING')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    transaction_id = models.CharField(max_length=100, blank=True, null=True)  # Added field
 
     def __str__(self):
         return f"Order #{self.id} by {self.user.username}"
@@ -56,8 +85,14 @@ class Order(models.Model):
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_items')
     service = models.ForeignKey(Service, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField()
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    quantity = models.PositiveIntegerField(
+        validators=[MinValueValidator(1, message="Quantity must be at least 1")]
+    )
+    price = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        validators=[MinValueValidator(0.01, message="Price must be positive")]
+    )
 
     def __str__(self):
         return f"{self.quantity} x {self.service.name} in Order #{self.order.id}"
