@@ -460,22 +460,22 @@ def payment_success(request):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def payment_fail(request):
-    order_id = request.POST.get('tran_id').split('_')[1]  # Extract order ID
+    order_id = request.POST.get('tran_id').split('_')[1]  
     try:
-        order = Order.objects.get(id=order_id)  # Fetch the order object
+        order = Order.objects.get(id=order_id)  
         order.status = 'FAILED'
         order.save()
     except Order.DoesNotExist:
         logger.error("Order with ID %s not found", order_id)
-        return HttpResponseRedirect("http://localhost:5173/error-page/")  # Fallback page for errors
+        return HttpResponseRedirect("http://localhost:5173/error-page/")  
     
     return HttpResponseRedirect("http://localhost:5173/dashboard/orders/")
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def payment_cancel(request):
-    order_id = request.POST.get('tran_id').split('_')[1]  # Extract order ID
-    order = Order.objects.get(id=order_id)  # Fetch the order object
+    order_id = request.POST.get('tran_id').split('_')[1]  
+    order = Order.objects.get(id=order_id)  
     order.status = 'CANCELLED'
     order.save()
     return HttpResponseRedirect("http://localhost:5173/dashboard/orders/")
@@ -486,10 +486,10 @@ class HasOrderedProduct(APIView):
     def get(self, request, service_id):
         user = request.user
         try:
-            # Assuming OrderItem links to Order with a status field
+            
             has_ordered = OrderItem.objects.filter(
                 order__user=user,
-                order__status='COMPLETED',  # Adjust status field name and value
+                order__status='COMPLETED',  
                 service_id=service_id
             ).exists()
             logger.info(f"User {user.id} checked for service {service_id}: {has_ordered}")

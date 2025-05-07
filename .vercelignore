@@ -1,0 +1,20 @@
+# Python cache and compiled files
+__pycache__/
+*.pyc
+
+# Environment
+.env
+house_env/
+
+# SQLite database
+db.sqlite3
+
+# Project-specific folders
+HomeSnap/
+
+# Logs or other extras
+*.log
+*.md
+*.sqlite3
+tests/
+media/
