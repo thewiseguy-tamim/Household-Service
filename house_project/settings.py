@@ -76,7 +76,7 @@ WSGI_APPLICATION = 'house_project.wsgi.app'
 # }
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173"
+    "https://home-snapx.vercel.app/"
 ]
 
 DATABASES = {
@@ -140,23 +140,20 @@ cloudinary.config(
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
-# Email settings (e.g., using Gmail)
-# Email settings
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'  # Gmail's SMTP server
+EMAIL_HOST = 'smtp.gmail.com'  
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'nottamimislam@gmail.com'  # Your email address
-EMAIL_HOST_PASSWORD = 'piiy bxeo gkby utzh'  # Your email password (Be cautious with hardcoding sensitive information)
-DEFAULT_FROM_EMAIL = 'nottamimislam@gmail.com'  # The default sender email address
+EMAIL_HOST_USER = 'nottamimislam@gmail.com'  
+EMAIL_HOST_PASSWORD = 'piiy bxeo gkby utzh'  
+DEFAULT_FROM_EMAIL = 'nottamimislam@gmail.com'  
 
 # Frontend URL settings
-FRONTEND_PROTOCOL = 'http'
-FRONTEND_DOMAIN = 'localhost:5173'
+FRONTEND_PROTOCOL = 'https'
+FRONTEND_DOMAIN = 'home-snapx.vercel.app/'
 
 DJOSER = {
-    # 'FRONTEND_PROTOCOL': 'http',
-    # 'FRONTEND_DOMAIN': 'localhost:5173',
     'USER_CREATE_PASSWORD_RETYPE': True,
     'SEND_ACTIVATION_EMAIL': True,
     'ACTIVATION_URL': 'activate/{uid}/{token}/',
@@ -187,6 +184,6 @@ LOGGING = {
 
 CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1:8000",
-    "http://localhost:5173",  # If your frontend runs here
+    "https://home-snapx.vercel.app/",  
 ]
 
