@@ -52,7 +52,6 @@ class RegisterSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        # Create user instance
         user = User.objects.create(
             username=validated_data['username'],
             email=validated_data['email'],
@@ -63,25 +62,29 @@ class RegisterSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password'])
         user.save()
 
-        # Send activation email
-        self.send_activation_email(user)
+        self.send_activation_email(user)  
 
         return user
 
-    def send_activation_email(self, user):
-        # Generate the activation token using the default token generator
-        uid = str(user.pk)  # Ensure that the user id (uid) is a string
+    def send_activation_email(self, user):  
+        uid = str(user.pk)
         token = default_token_generator.make_token(user)
-        
-        # Define the activation link
-        activation_link = f"{settings.FRONTEND_PROTOCOL}://{settings.FRONTEND_DOMAIN}/activate/{uid}/{token}/"
-        
-        # Send the email
-        subject = "Activate your account"
-        message = f"Hello, \n\nWelcome to HomeSnap! To activate your account, please click the link below:\n\n{activation_link}\n\nThank you for joining us!\n\nBest regards,\nThe HomeSnap Team and Tamim Islam"
 
-        
+        activation_link = f"https://home-snapx.vercel.app/activate/{uid}/{token}/"
+
+        subject = "Activate your account"
+        message = (
+            f"Hello,\n\n"
+            f"Welcome to HomeSnap! To activate your account, please click the link below to activate and:\n\n"
+            f"{activation_link}\n\n"
+            f"Thank you for joining us!\n\n"
+            f"Best regards,\n"
+            f"The HomeSnap Team and Tamim Islam"
+        )
+
         send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [user.email])
+
+
 
 class UserProfileSerializer(serializers.ModelSerializer):
     profile_picture = serializers.ImageField(required=False)
