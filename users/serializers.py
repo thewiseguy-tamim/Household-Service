@@ -19,6 +19,8 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
 
 User = get_user_model()
 
@@ -66,23 +68,48 @@ class RegisterSerializer(serializers.ModelSerializer):
 
         return user
 
-    def send_activation_email(self, user):  
-        uid = str(user.pk)
-        token = default_token_generator.make_token(user)
+    
 
-        activation_link = f"https://home-snapx-ekr9rekgz-tamims-projects-bb8a6785.vercel.app/activate/{uid}/{token}/"
+    def send_activation_email(self, user):
+        login_url = "https://home-snapx-ekr9rekgz-tamims-projects-bb8a6785.vercel.app/login"
 
         subject = "Activate your account"
-        message = (
-            f"Hello,\n\n"
-            f"Welcome to HomeSnap! To activate your account, please click the link below to activate and:\n\n"
-            f"{activation_link}\n\n"
-            f"Thank you for joining us!\n\n"
-            f"Best regards,\n"
-            f"The HomeSnap Team and Tamim Islam"
+        from_email = settings.DEFAULT_FROM_EMAIL
+        to_email = [user.email]
+
+        
+        text_content = (
+            f"Hello {user.first_name},\n\n"
+            f"Click the link below to activate your account:\n{login_url}"
         )
 
-        send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [user.email])
+        
+        html_content = f"""
+        <html>
+        <body>
+            <p>Hello {user.first_name},</p>
+            <p>Welcome to HomeSnap! To activate your account, please click the button below:</p>
+            <p style="text-align: center;">
+                <a href="{login_url}" style="
+                    background-color: #4CAF50;
+                    color: white;
+                    padding: 10px 20px;
+                    text-decoration: none;
+                    border-radius: 5px;
+                    font-weight: bold;
+                ">Activate</a>
+            </p>
+            <br>
+            <p>Thank you for joining us!</p>
+            <p>Best regards,<br>The HomeSnap Team and Tamim Islam</p>
+        </body>
+        </html>
+        """
+
+        msg = EmailMultiAlternatives(subject, text_content, from_email, to_email)
+        msg.attach_alternative(html_content, "text/html")
+        msg.send()
+
 
 
 
