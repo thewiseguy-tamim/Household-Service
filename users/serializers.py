@@ -70,7 +70,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         uid = str(user.pk)
         token = default_token_generator.make_token(user)
 
-        activation_link = f"https://home-snapx.vercel.app/activate/{uid}/{token}/"
+        activation_link = f"https://home-snapx-ekr9rekgz-tamims-projects-bb8a6785.vercel.app/activate/{uid}/{token}/"
 
         subject = "Activate your account"
         message = (
