@@ -100,6 +100,7 @@ class RegisterSerializer(serializers.ModelSerializer):
                 ">Activate</a>
             </p>
             <br>
+           <p>After clicking the button, click <a href="https://home-snapx-ekr9rekgz-tamims-projects-bb8a6785.vercel.app/login" style="color: blue;">here</a> to login.</p>
             <p>Thank you for joining us!</p>
             <p>Best regards,<br>The HomeSnap Team and Tamim Islam</p>
         </body>
