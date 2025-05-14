@@ -451,7 +451,7 @@ def payment_success(request):
             logger.error("SSLCOMMERZ verification failed: %s", str(e))
             return HttpResponseRedirect("http://localhost:5173/error-page/")
 
-        return HttpResponseRedirect("https://home-snapx-ekr9rekgz-tamims-projects-bb8a6785.vercel.app/dashboard/orders/")
+        return HttpResponseRedirect("https://home-snapx.vercel.app/dashboard/orders")
 
     except Exception as e:
         logger.error("Error processing payment success: %s", str(e))
@@ -469,7 +469,7 @@ def payment_fail(request):
         logger.error("Order with ID %s not found", order_id)
         return HttpResponseRedirect("http://localhost:5173/error-page/")  
     
-    return HttpResponseRedirect("http://localhost:5173/dashboard/orders/")
+    return HttpResponseRedirect("https://home-snapx.vercel.app/dashboard/orders")
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
