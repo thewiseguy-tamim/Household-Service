@@ -71,7 +71,7 @@ class RegisterSerializer(serializers.ModelSerializer):
     
 
     def send_activation_email(self, user):
-        login_url = "https://home-snapx-ekr9rekgz-tamims-projects-bb8a6785.vercel.app/login"
+        login_url = "https://home-snapx.vercel.app/login"
 
         subject = "Activate your account"
         from_email = settings.DEFAULT_FROM_EMAIL
@@ -100,7 +100,7 @@ class RegisterSerializer(serializers.ModelSerializer):
                 ">Activate</a>
             </p>
             <br>
-           <p>After clicking the button, click <a href="https://home-snapx-ekr9rekgz-tamims-projects-bb8a6785.vercel.app/login" style="color: blue;">here</a> to login.</p>
+           <p>After clicking the button, click <a href="https://home-snapx.vercel.app/login" style="color: blue;">here</a> to login.</p>
             <p>Thank you for joining us!</p>
             <p>Best regards,<br>The HomeSnap Team and Tamim Islam</p>
         </body>
