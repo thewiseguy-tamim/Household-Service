@@ -57,13 +57,32 @@ class PurchaseCreateView(generics.CreateAPIView):
 
         if is_first_purchase:
             try:
+                # Fetch the service name
+                service = Service.objects.get(id=service_id)
                 send_mail(
-                    subject='Thank You for Your Purchase!',
-                    message=f'Dear {purchase.full_name},\n\nThank you for purchasing our service!\n\nDetails:\nService ID: {service_id}\nAddress: {purchase.address}\nPhone: [+country code]{purchase.phone_number}\n\nBest Regards,\nYour Company',
+                    subject='Welcome to HomeSnap - Thank You for Your Purchase!',
+                    message=f'''Dear {purchase.full_name},
+
+Thank you for choosing HomeSnap! We're delighted to welcome you as a new customer.
+
+Your purchase details:
+Service: {service.name}
+Address: {purchase.address}
+Contact: {purchase.phone_number}
+
+If you have any questions about your service, our support team is available 24/7 at support@homesnap.com.
+
+We look forward to providing you with exceptional service!
+
+Warm regards,
+The HomeSnap Team
+https://home-snapx.vercel.app/''',
                     from_email='nottamimislam@gmail.com',
-                    recipient_list=['your-test-email@example.com'],
+                    recipient_list=[user.email],
                     fail_silently=True,
                 )
+            except Service.DoesNotExist:
+                print(f"Service with id {service_id} not found")
             except Exception as e:
                 print(f"Email sending failed: {str(e)}")
 
