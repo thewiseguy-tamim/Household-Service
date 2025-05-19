@@ -19,11 +19,8 @@ class PurchaseSerializer(serializers.ModelSerializer):
 
 class ServiceSerializer(serializers.ModelSerializer):
     images = ServiceImageSerializer(many=True, read_only=True, source='images')
-    rating = serializers.IntegerField(read_only=True, allow_null=True)
-    average_rating = serializers.FloatField(
-        source='average_rating', 
-        read_only=True
-    )
+    average_rating = serializers.FloatField(source='average_rating', read_only=True)
+    rating = serializers.SerializerMethodField()
 
     class Meta:
         model = Service
@@ -32,6 +29,10 @@ class ServiceSerializer(serializers.ModelSerializer):
             'price', 'rating', 'average_rating', 'duration',
             'created_at', 'updated_at', 'images'
         ]
+
+    def get_rating(self, obj):
+        first_review = obj.reviews.first()
+        return int(first_review.rating) if first_review else None
 
 class CartItemSerializer(serializers.ModelSerializer):
     service = ServiceSerializer(read_only=True)
