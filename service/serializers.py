@@ -7,13 +7,18 @@ from .models import Service, ServiceImage
 from rest_framework import serializers
 from .models import Purchase
 
+class ServiceImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ServiceImage
+        fields = ['image']
+
 class PurchaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Purchase
         fields = ['full_name', 'address', 'phone_number', 'service_id']
 
 class ServiceSerializer(serializers.ModelSerializer):
-    
+    images = ServiceImageSerializer(many=True, read_only=True, source='images')
     rating = serializers.IntegerField(read_only=True, allow_null=True)
     average_rating = serializers.FloatField(
         source='annotated_avg', 
@@ -25,7 +30,7 @@ class ServiceSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'name', 'description', 
             'price', 'rating', 'average_rating', 'duration',
-            'created_at', 'updated_at'
+            'created_at', 'updated_at', 'images'
         ]
 
 class CartItemSerializer(serializers.ModelSerializer):
