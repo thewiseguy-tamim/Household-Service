@@ -21,7 +21,7 @@ class ServiceSerializer(serializers.ModelSerializer):
     images = ServiceImageSerializer(many=True, read_only=True, source='images')
     rating = serializers.IntegerField(read_only=True, allow_null=True)
     average_rating = serializers.FloatField(
-        source='annotated_avg', 
+        source='average_rating', 
         read_only=True
     )
 
