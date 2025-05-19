@@ -113,9 +113,14 @@ class ServiceViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowAny]
 
     def get_queryset(self):
+        first_rating_subquery = Review.objects.filter(
+            service=OuterRef('pk')
+        ).values('rating')[:1]
+
         return Service.objects.annotate(
+            rating=Subquery(first_rating_subquery),
             average_rating=Avg('reviews__rating')
-        ).order_by('-id')
+        ).order_by('-id') 
 
 class CartViewSet(viewsets.ModelViewSet):
     serializer_class = CartSerializer
