@@ -13,7 +13,8 @@ from .views import (
     payment_cancel,
     HasOrderedProduct,
     PurchaseCreateView,
-    PurchaseCheckView
+    PurchaseCheckView,
+    AdminOrderViewSet
     
 )
 from users.views import UserServiceHistoryViewSet, UserViewSet
@@ -27,6 +28,7 @@ router.register(r'order-items', OrderItemViewSet, basename='orderitem')
 router.register(r'reviews', ReviewViewSet, basename='review')
 router.register(r'Client', UserServiceHistoryViewSet, basename='client')
 router.register(r'users', UserViewSet, basename='user')
+router.register(r'admin/orders', AdminOrderViewSet, basename='admin-orders')
 app_name = 'service'
 
 urlpatterns = [
