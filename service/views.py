@@ -37,6 +37,24 @@ from rest_framework.permissions import AllowAny
 from .models import Purchase
 from .serializers import PurchaseSerializer
 
+class AdminOrderViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+    permission_classes = [permissions.IsAdminUser] 
+
+    def get_authenticators(self):
+        if getattr(self, 'swagger_fake_view', False):
+            return []
+        return super().get_authenticators()
+
+    def filter_queryset(self, queryset):
+        if getattr(self, 'swagger_fake_view', False):
+            return Order.objects.none()
+        return super().filter_queryset(queryset)
+
+    def get_queryset(self):
+        return Order.objects.all()  
+
 class PurchaseCreateView(generics.CreateAPIView):
     serializer_class = PurchaseSerializer
     permission_classes = [AllowAny]
