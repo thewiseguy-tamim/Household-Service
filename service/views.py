@@ -40,7 +40,7 @@ from .serializers import PurchaseSerializer
 class AdminOrderViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
-    permission_classes = [permissions.IsAdminUser] 
+    permission_classes = [] 
 
     def get_authenticators(self):
         if getattr(self, 'swagger_fake_view', False):
