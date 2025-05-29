@@ -13,21 +13,21 @@ class PurchaseSerializer(serializers.ModelSerializer):
         fields = ['full_name', 'address', 'phone_number', 'service_id']
 
 class ServiceSerializer(serializers.ModelSerializer):
-    
     rating = serializers.IntegerField(read_only=True, allow_null=True)
     average_rating = serializers.FloatField(
         source='annotated_avg', 
         read_only=True
     )
+    image = serializers.ImageField(required=False, allow_null=True)  
 
     class Meta:
         model = Service
         fields = [
             'id', 'name', 'description', 
             'price', 'rating', 'average_rating', 'duration',
+            'image',  
             'created_at', 'updated_at'
         ]
-
 
 class CartItemSerializer(serializers.ModelSerializer):
     service = ServiceSerializer(read_only=True)

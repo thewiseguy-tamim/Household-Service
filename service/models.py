@@ -33,6 +33,7 @@ class Service(models.Model):
         validators=[MinValueValidator(0.01, message="Price must be positive")]
     )
     duration = models.DurationField()
+    image = CloudinaryField('image', null=True, blank=True)  # Use CloudinaryField
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
