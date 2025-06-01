@@ -14,7 +14,7 @@ from .views import (
     HasOrderedProduct,
     PurchaseCreateView,
     PurchaseCheckView,
-    AdminOrderViewSet
+    AllOrdersViewSet
     
 )
 from users.views import UserServiceHistoryViewSet, UserViewSet
@@ -27,8 +27,8 @@ router.register(r'orders', OrderViewSet, basename='order')
 router.register(r'order-items', OrderItemViewSet, basename='orderitem')
 router.register(r'reviews', ReviewViewSet, basename='review')
 router.register(r'Client', UserServiceHistoryViewSet, basename='client')
-router.register(r'users', UserViewSet, basename='user')
-router.register(r'admin/orders', AdminOrderViewSet, basename='admin-orders')
+router.register(r'users', UserViewSet, basename='user'),
+router.register(r'api/admin-orders', AllOrdersViewSet, basename='admin-orders')
 app_name = 'service'
 
 urlpatterns = [

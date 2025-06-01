@@ -28,7 +28,7 @@ from rest_framework import status
 from .models import Purchase
 from .serializers import PurchaseSerializer
 
-
+from users.permissions import IsAdminUser
 from django.core.mail import send_mail
 from rest_framework import generics, views
 from rest_framework.response import Response
@@ -37,23 +37,22 @@ from rest_framework.permissions import AllowAny
 from .models import Purchase
 from .serializers import PurchaseSerializer
 
-class AdminOrderViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Order.objects.all()
+logger = logging.getLogger(__name__)
+
+class AllOrdersViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Order.objects.all().order_by('-created_at')
     serializer_class = OrderSerializer
-    permission_classes = [] 
-
-    def get_authenticators(self):
-        if getattr(self, 'swagger_fake_view', False):
-            return []
-        return super().get_authenticators()
-
-    def filter_queryset(self, queryset):
-        if getattr(self, 'swagger_fake_view', False):
-            return Order.objects.none()
-        return super().filter_queryset(queryset)
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+    http_method_names = ['get']
 
     def get_queryset(self):
-        return Order.objects.all()  
+        logger.info("AllOrdersViewSet accessed by user: %s", self.request.user)
+        queryset = super().get_queryset()
+        status = self.request.query_params.get('status')
+        if status:
+            queryset = queryset.filter(status=status)
+        logger.info("Queryset: %s", queryset)
+        return queryset
 
 class PurchaseCreateView(generics.CreateAPIView):
     serializer_class = PurchaseSerializer

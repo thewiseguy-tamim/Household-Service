@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Service, Cart, CartItem, Order, Review, OrderItem
-from users.serializers import UserSerializer  # Assuming UserSerializer is defined
+from users.serializers import UserSerializer  
 
 from rest_framework import serializers
 from .models import Service, ServiceImage
