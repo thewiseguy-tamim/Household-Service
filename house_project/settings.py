@@ -75,8 +75,18 @@ WSGI_APPLICATION = 'house_project.wsgi.app'
 #     }
 # }
 
+CORS_ALLOW_ALL_ORIGINS = False  
 CORS_ALLOWED_ORIGINS = [
-    "https://home-snapx.vercel.app"
+    "https://home-snapx.vercel.app",
+]
+
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "authorization",
+    "content-type",
+    "x-csrftoken",
 ]
 
 DATABASES = {
@@ -132,7 +142,7 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('JWT',),
 }
 
-CORS_ALLOW_ALL_ORIGINS = True
+
 
 cloudinary.config(
     cloudinary_url=os.getenv('CLOUDINARY_URL')
