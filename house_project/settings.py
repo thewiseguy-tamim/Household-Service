@@ -76,7 +76,8 @@ WSGI_APPLICATION = 'house_project.wsgi.app'
 # }
 
 CORS_ALLOWED_ORIGINS = [
-    "https://home-snapx.vercel.app"
+    "http://localhost:5173",  
+    "https://home-snapx.vercel.app", 
 ]
 
 DATABASES = {
