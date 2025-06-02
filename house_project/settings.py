@@ -8,14 +8,13 @@ import cloudinary
 
 load_dotenv()
 
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-default-key')
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['.vercel.app', '127.0.0.1']
+ALLOWED_HOSTS = ['.vercel.app', '127.0.0.1', 'localhost']
 
 INSTALLED_APPS = [
     "whitenoise.runserver_nostatic",
@@ -37,7 +36,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",  # Must be first
     'django.middleware.security.SecurityMiddleware',
     "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -68,35 +67,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'house_project.wsgi.app'
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",  
-    "https://home-snapx.vercel.app", 
-]
-
 DATABASES = {
     'default': dj_database_url.config(default=os.getenv('DATABASE_URL'))
 }
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
 LANGUAGE_CODE = 'en-us'
@@ -133,27 +112,44 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('JWT',),
 }
 
-CORS_ALLOW_ALL_ORIGINS = True
+# ✅ CORS CONFIG
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "https://home-snapx.vercel.app",
+    "https://household-service.vercel.app",
+]
+# ❌ Remove this line to avoid conflict with CORS_ALLOWED_ORIGINS
+# CORS_ALLOW_ALL_ORIGINS = True
 
+# ✅ CSRF CONFIG
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5173",
+    "https://home-snapx.vercel.app",
+    "https://household-service.vercel.app",
+]
+
+# ✅ CLOUDINARY
 cloudinary.config(
     cloudinary_url=os.getenv('CLOUDINARY_URL')
 )
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
-
+# ✅ EMAIL CONFIG
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'  
+EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'nottamimislam@gmail.com'  
-EMAIL_HOST_PASSWORD = 'piiy bxeo gkby utzh'  
-DEFAULT_FROM_EMAIL = 'nottamimislam@gmail.com'  
+EMAIL_HOST_USER = 'nottamimislam@gmail.com'
+EMAIL_HOST_PASSWORD = 'piiy bxeo gkby utzh'
+DEFAULT_FROM_EMAIL = 'nottamimislam@gmail.com'
 
-# Frontend URL settings
+# ✅ FRONTEND INFO (optional use)
 FRONTEND_PROTOCOL = 'https'
-FRONTEND_DOMAIN = 'home-snapx.vercel.app/'
+FRONTEND_DOMAIN = 'home-snapx.vercel.app'
 
+# ✅ DJOSER SETTINGS
 DJOSER = {
     'USER_CREATE_PASSWORD_RETYPE': True,
     'SEND_ACTIVATION_EMAIL': True,
@@ -165,7 +161,7 @@ DJOSER = {
     },
 }
 
-
+# ✅ LOGGING
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -182,8 +178,3 @@ LOGGING = {
         },
     },
 }
-
-CSRF_TRUSTED_ORIGINS = [
-    "http://127.0.0.1:8000",
-    "https://home-snapx.vercel.app/",  
-]
