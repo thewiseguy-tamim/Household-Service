@@ -113,13 +113,13 @@ SIMPLE_JWT = {
 }
 
 # ✅ CORS CONFIG
-CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-    "https://home-snapx.vercel.app"
-]
+CORS_ALLOW_CREDENTIALS = False
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:5173",
+#     "https://home-snapx.vercel.app"
+# ]
 # ❌ Remove this line to avoid conflict with CORS_ALLOWED_ORIGINS
-# CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = True
 
 # ✅ CSRF CONFIG
 CSRF_TRUSTED_ORIGINS = [
